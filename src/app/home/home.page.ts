@@ -63,7 +63,7 @@ export class HomePage {
     this.router.navigateByUrl('/', { replaceUrl: true });
   }
 
-  async add() {
-
+  done(id) {
+    this.firebaseService.markDone(id)
   }
 }
