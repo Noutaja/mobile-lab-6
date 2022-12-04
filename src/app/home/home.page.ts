@@ -31,12 +31,19 @@ export class HomePage {
   ) {  }
 
   
-  async ngOnInit() {
+  ngOnInit() {
 		this.todoForm = this.formBuilder.group({
 			title: ['']
 		});
-    this.Tasks =  await this.firebaseService.getTasks();
+    this.updateTasks();
 	}
+
+  async updateTasks() {
+    this.Tasks =  await this.firebaseService.getTasks();
+    setTimeout(() => {
+      this.updateTasks()
+    }, 1000);
+  }
 
   onSubmit() {
     if (!this.todoForm.valid) {
@@ -52,10 +59,7 @@ export class HomePage {
   }
 
   remove(id) {
-    console.log(id)
-    if (window.confirm('Are you sure?')) {
-      this.firebaseService.delete(id)
-    }
+      this.firebaseService.delete(id);
   }
 
   async logout() {

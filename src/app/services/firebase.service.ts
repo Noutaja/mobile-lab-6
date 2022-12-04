@@ -35,40 +35,26 @@ export class FirebaseService {
     d.forEach(doc => {
       tasks.push({ done: doc.data().done, title: doc.data().title, id: doc.id })
     });
-    console.log(tasks);
     return tasks;
 
   }
 
   async markDone(id: string) {
-    const a = getDoc(doc(this.fire, "tasks", id))
-    const doneAtm = (await a).data().done
+    const user = this.auth.currentUser;
+    const a = await getDoc(doc(this.fire, user.uid, id))
+    const doneAtm = a.data().done
 
-    if (doneAtm == false) {
-      const docRef = doc(this.fire, "tasks", id);
-      const data = {
-        done: true
-      };
-      setDoc(docRef, data, { merge: true })
-        .then(docRef => {
-          console.log("Entire Document has been updated successfully");
-        })
-        .catch(error => {
-          console.log(error);
-        })
-    } else {
-      const docRef = doc(this.fire, "tasks", id);
-      const data = {
-        done: false
-      };
-      setDoc(docRef, data, { merge: true })
-        .then(docRef => {
-          console.log("Entire Document has been updated successfully");
-        })
-        .catch(error => {
-          console.log(error);
-        })
-    }
+    const docRef = doc(this.fire, user.uid, id);
+    const data = {
+      done: !doneAtm
+    };
+    setDoc(docRef, data, { merge: true })
+      .then(docRef => {
+        console.log("Entire Document has been updated successfully");
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   async delete(id: string) {
